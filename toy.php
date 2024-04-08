@@ -7,7 +7,22 @@
 	//		i.e., ../toy.php?toynum=0001
 	$toy_id = $_GET['toynum'];
 
+	function get_toy(PDO $pdo, string $id) {
 
+		// SQL query to retrieve toy information based on the toy ID
+		$sql = "SELECT *, manuf.name as manufname, toy.name as toyname
+			FROM toy JOIN manuf
+			WHERE toy.toynum= :id AND
+			manuf.manid= toy.manid;";	// :id is a placeholder for value provided later 
+		                               // It's a parameterized query that helps prevent SQL injection attacks and ensures safer interaction with the database.
+
+
+		// Execute the SQL query using the pdo function and fetch the result
+		$toy = pdo($pdo, $sql, ['id' => $id])->fetch();		// Associative array where 'id' is the key and $id is the value. Used to bind the value of $id to the placeholder :id in  SQL query.
+
+		// Return the toy information (associative array)
+		return $toy;
+	}
 	/*
 	 * TO-DO: Define a function that retrieves ALL toy and manufacturer info from the database based on the toynum parameter from the URL query string.
 	 		  - Write SQL query to retrieve ALL toy and manufacturer info based on toynum
@@ -16,6 +31,8 @@
 
 	 		  Retrieve info about toy from the db using provided PDO connection
 	 */
+
+	$toy1 = get_toy($pdo, $toy_id);
 
 
 // Closing PHP tag  ?> 
@@ -64,45 +81,45 @@
 			<div class="toy-details-container">
 				<div class="toy-image">
 					<!-- Display image of toy with its name as alt text -->
-					<img src="<?= '' ?>" alt="<?= '' ?>">
+					<img src="<?= $toy1['imgSrc'] ?>" alt="<?= $toy1['toyname'] ?>">
 				</div>
 
 				<div class="toy-details">
 
 					<!-- Display name of toy -->
-			        <h1><?= '' ?></h1>
+			        <h1><?= $toy1['toyname'] ?></h1>
 
 			        <hr />
 
 			        <h3>Toy Information</h3>
 
 			        <!-- Display description of toy -->
-			        <p><strong>Description:</strong> <?= '' ?></p>
+			        <p><strong>Description:</strong> <?= $toy1['description'] ?></p>
 
 			        <!-- Display price of toy -->
-			        <p><strong>Price:</strong> $ <?= '' ?></p>
+			        <p><strong>Price:</strong> $ <?= $toy1['price'] ?></p>
 
 			        <!-- Display age range of toy -->
-			        <p><strong>Age Range:</strong> <?= '' ?></p>
+			        <p><strong>Age Range:</strong> <?= $toy1['agerange'] ?></p>
 
 			        <!-- Display stock of toy -->
-			        <p><strong>Number In Stock:</strong> <?= '' ?></p>
+			        <p><strong>Number In Stock:</strong> <?= $toy1['numinstock'] ?></p>
 
 			        <br />
 
 			        <h3>Manufacturer Information</h3>
 
 			        <!-- Display name of manufacturer -->
-			        <p><strong>Name:</strong> <?= '' ?> </p>
+			        <p><strong>Name:</strong> <?= $toy1['manufname'] ?> </p>
 
 			        <!-- Display address of manufacturer -->
-			        <p><strong>Address:</strong> <?= '' ?></p>
+			        <p><strong>Address:</strong> <?= $toy1['Street'] ?></p>
 
 			        <!-- Display phone of manufacturer -->
-			        <p><strong>Phone:</strong> <?= '' ?></p>
+			        <p><strong>Phone:</strong> <?= $toy1['phone'] ?></p>
 
 			        <!-- Display contact of manufacturer -->
-			        <p><strong>Contact:</strong> <?= '' ?></p>
+			        <p><strong>Contact:</strong> <?= $toy1['contact'] ?></p>
 			    </div>
 			</div>
 		</main>
